@@ -4,28 +4,22 @@
 use starknet::{ContractAddress};
 
 #[starknet::interface]
-pub trait IErc1155SinglePortal<TContractState> {
-    fn depositSingleERC1155Token(self: @TContractState, token: ContractAddress, appContract: ContractAddress, tokenId: u256, value: u256, baseLayerData: Span<felt252>, execLayerData: ByteArray);
-}
-
-#[starknet::interface]
-pub trait IERC1155<TContractState> {
-    fn safe_transfer_from( ref self: TContractState, from: ContractAddress, to: ContractAddress, token_id: u256, value: u256, data: Span<felt252> );
-    fn safe_batch_transfer_from( ref self: TContractState, from: ContractAddress, to: ContractAddress, token_ids: Span<u256>, values: Span<u256>, data: Span<felt252> );
+pub trait IERC1155BatchPortal<TContractState> {
+    fn depositBatchERC1155Token(self: @TContractState, token: ContractAddress, appContract: ContractAddress, tokenIds: Span<u256>, values: Span<u256>, baseLayerData: Span<felt252>, execLayerData: ByteArray);
 }
 
 
-/// @title ERC-1155 Single Transfer Portal
+/// @title ERC-1155 Batch Transfer Portal
 ///
-/// @notice This contract allows anyone to perform single transfers of
+/// @notice This contract allows anyone to perform batch transfers of
 /// ERC-1155 tokens to an application contract while informing the off-chain machine.
 #[starknet::contract]
-mod Erc1155SinglePortal {
+mod Erc1155BatchPortal {
+    use super::super::Erc1155SinglePortal::{IERC1155Dispatcher, IERC1155DispatcherTrait};
     use core::serde::Serde;
     use starknet::{ContractAddress, get_caller_address, get_contract_address};
     use super::super::Portal::Portal_component;
     use super::super::InputBox::{IInputBoxDispatcher, IInputBoxDispatcherTrait};
-    use super::{IERC1155Dispatcher, IERC1155DispatcherTrait};
 
     component!(path: Portal_component, storage: portal, event: PortalEvent);
 
@@ -55,8 +49,8 @@ mod Erc1155SinglePortal {
     }
 
     #[abi(embed_v0)]
-    impl Erc1155SinglePortalImpl of super::IErc1155SinglePortal<ContractState> {
-        /// @notice Transfer ERC-1155 tokens of a single type to an application contract
+    impl Erc1155BatchPortalImpl of super::IERC1155BatchPortal<ContractState> {
+        /// @notice Transfer a batch of ERC-1155 tokens of multiple types to an application contract
         /// and add an input to the application's input box to signal such operation.
         ///
         /// The caller must enable approval for the portal to manage all of their tokens
@@ -64,22 +58,25 @@ mod Erc1155SinglePortal {
         ///
         /// @param token The ERC-1155 token contract
         /// @param appContract The application contract address
-        /// @param tokenId The identifier of the token being transferred
-        /// @param value Transfer amount
+        /// @param tokenIds The identifiers of the tokens being transferred
+        /// @param values Transfer amounts per token type
         /// @param baseLayerData Additional data to be interpreted by the base layer
         /// @param execLayerData Additional data to be interpreted by the execution layer
-        fn depositSingleERC1155Token( self: @ContractState, token: ContractAddress, appContract: ContractAddress, tokenId: u256, value: u256, baseLayerData: Span<felt252>, execLayerData: ByteArray) {
-            IERC1155Dispatcher{contract_address: token}.safe_transfer_from(get_caller_address(), appContract, tokenId, value, baseLayerData);
+        ///
+        /// @dev Please make sure the arrays `tokenIds` and `values` have the same length.
+        fn depositBatchERC1155Token( self: @ContractState, token: ContractAddress, appContract: ContractAddress, tokenIds: Span<u256>, values: Span<u256>, baseLayerData: Span<felt252>, execLayerData: ByteArray) {
+            IERC1155Dispatcher{contract_address: token}.safe_batch_transfer_from(get_caller_address(), appContract, tokenIds, values, baseLayerData);
 
             let mut payload: Array<felt252> = array![];
             token.serialize(ref payload);
             get_caller_address().serialize(ref payload);
-            tokenId.serialize(ref payload);
-            value.serialize(ref payload);
+            tokenIds.serialize(ref payload);
+            values.serialize(ref payload);
             baseLayerData.serialize(ref payload);
             execLayerData.serialize(ref payload);
 
             self.portal.inputBox.read().addInput(appContract, payload);
         }
     }
+
 }
