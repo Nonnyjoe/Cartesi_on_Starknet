@@ -11,13 +11,7 @@ pub trait IInputBox<TContractState> {
     /// @return The hash of the input blob
     /// @dev MUST fire an `InputAdded` event.
     fn addInput(ref self: TContractState, appContract: ContractAddress, payload: Array<felt252>) -> felt252;
-    /// @notice Get the number of inputs sent to an application.
-    /// @param appContract The application contract address
     fn getNumberOfInputs(self: @TContractState, appContract: ContractAddress) -> u256;
-    /// @notice Get the hash of an input in an application's input box.
-    /// @param appContract The application contract address
-    /// @param index The input index
-    /// @dev The provided index must be valid.
     fn getInputHash(self: @TContractState, appContract: ContractAddress, index: u256) -> felt252;
 }
 
@@ -78,22 +72,25 @@ mod InputBox {
             index.serialize(ref input);
             payload.serialize(ref input);
             
-            // Todo(Chinonso): Confirm the length of the input later.
+            // @todo(Chinonso): Confirm the length of the input later.
 
             let inputHash: felt252 = PoseidonTrait::new().update(poseidon_hash_span(input.span())).finalize();
             self.inputBoxes.write((appContract, index), inputHash);
             self.appContractInputCount.write(appContract, index + 1);
-
             self.emit(InputAdded{appContract: appContract, index: index, input: input});
-
             return inputHash;
-
         }
 
+        /// @notice Get the number of inputs sent to an application.
+        /// @param appContract The application contract address
         fn getNumberOfInputs(self: @ContractState, appContract: ContractAddress) -> u256 {
             self.appContractInputCount.read(appContract)
         }
 
+        /// @notice Get the hash of an input in an application's input box.
+        /// @param appContract The application contract address
+        /// @param index The input index
+        /// @dev The provided index must be valid.
         fn getInputHash(self: @ContractState, appContract: ContractAddress, index: u256) -> felt252 {
             self.inputBoxes.read((appContract, index))
         }

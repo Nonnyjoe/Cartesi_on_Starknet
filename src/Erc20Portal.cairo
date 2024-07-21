@@ -4,7 +4,7 @@ use starknet::{ContractAddress};
 
 #[starknet::interface]
 pub trait IErc20Portal<TContractState> {
-    fn depositErc20Tokens(self: @TContractState, ERC20: ContractAddress, appContract: ContractAddress, value: u256, execLayerData: ByteArray);
+    fn depositErc20Tokens(self: @TContractState, token: ContractAddress, appContract: ContractAddress, value: u256, execLayerData: ByteArray);
 }
 
 
@@ -85,12 +85,12 @@ mod Erc20Portal {
         /// @param appContract The application contract address
         /// @param value The amount of tokens to be transferred
         /// @param execLayerData Additional data to be interpreted by the execution layer
-        fn depositErc20Tokens(self: @ContractState, ERC20: ContractAddress, appContract: ContractAddress, value: u256, execLayerData: ByteArray) {
-            let success: bool = IERC20Dispatcher{contract_address: ERC20}.transferFrom(get_caller_address(), appContract, value);
+        fn depositErc20Tokens(self: @ContractState, token: ContractAddress, appContract: ContractAddress, value: u256, execLayerData: ByteArray) {
+            let success: bool = IERC20Dispatcher{contract_address: token}.transferFrom(get_caller_address(), appContract, value);
             assert(success, Errors::TRANSFER_FAILED);
 
             let mut payload: Array<felt252> = array![];
-            ERC20.serialize(ref payload);
+            token.serialize(ref payload);
             get_caller_address().serialize(ref payload);
             value.serialize(ref payload);
             execLayerData.serialize(ref payload);
