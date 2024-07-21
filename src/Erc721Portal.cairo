@@ -24,7 +24,7 @@ pub trait IERC721<TContractState> {
 #[starknet::contract]
 mod Erc721Portal {
     use core::serde::Serde;
-use starknet::{ContractAddress, get_caller_address, get_contract_address};
+    use starknet::{ContractAddress, get_caller_address, get_contract_address};
     use super::super::Portal::Portal_component;
     use super::super::InputBox::{IInputBoxDispatcher, IInputBoxDispatcherTrait};
     use super::{IERC721Dispatcher, IERC721DispatcherTrait};
