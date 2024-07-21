@@ -33,13 +33,11 @@ trait IERC20<TContractState> {
 /// ERC-20 tokens to an application contract while informing the off-chain machine.
 #[starknet::contract]
 mod Erc20Portal {
-    use cartesi_starknet::Portal::IPortal;
-    use cartesi_starknet::Portal::Portal_component::PortalInternalTraits;
     use core::serde::Serde;
     use starknet::{ContractAddress, get_caller_address, get_contract_address};
     use super::super::Portal::Portal_component;
     use super::{IERC20Dispatcher, IERC20DispatcherTrait};
-    use super::super::InputBox::{IInputBoxDispatcher, IInputBoxDispatcherTrait};
+    use super::super::super::inputbox::InputBox::{IInputBoxDispatcher, IInputBoxDispatcherTrait};
 
     component!(path: Portal_component, storage: portal, event: PortalEvent);
 

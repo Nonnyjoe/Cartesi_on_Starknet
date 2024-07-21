@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0 (see LICENSE)
 
 use starknet::{ContractAddress};
-use super::InputBox::IInputBoxDispatcher;
+use super::super::inputbox::InputBox::IInputBoxDispatcher;
 
 #[starknet::interface]
 pub trait IPortal<TContractState> {
