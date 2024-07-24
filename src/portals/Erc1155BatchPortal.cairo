@@ -19,7 +19,7 @@ mod Erc1155BatchPortal {
     use core::serde::Serde;
     use starknet::{ContractAddress, get_caller_address, get_contract_address};
     use super::super::Portal::Portal_component;
-    use super::super::super::inputbox::InputBox::{IInputBoxDispatcher, IInputBoxDispatcherTrait};
+    use super::super::super::inputs::InputBox::{IInputBoxDispatcher, IInputBoxDispatcherTrait};
 
     component!(path: Portal_component, storage: portal, event: PortalEvent);
 

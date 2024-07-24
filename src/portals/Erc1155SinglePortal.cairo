@@ -24,7 +24,7 @@ mod Erc1155SinglePortal {
     use core::serde::Serde;
     use starknet::{ContractAddress, get_caller_address, get_contract_address};
     use super::super::Portal::Portal_component;
-    use super::super::super::inputbox::InputBox::{IInputBoxDispatcher, IInputBoxDispatcherTrait};
+    use super::super::super::inputs::InputBox::{IInputBoxDispatcher, IInputBoxDispatcherTrait};
     use super::{IERC1155Dispatcher, IERC1155DispatcherTrait};
 
     component!(path: Portal_component, storage: portal, event: PortalEvent);

@@ -1,7 +1,7 @@
 mod dapp {
     pub mod ApplicationFactory;
 }
-mod inputbox {
+mod inputs {
     pub mod InputBox;
 }
 mod portals {

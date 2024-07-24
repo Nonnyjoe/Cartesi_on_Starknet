@@ -26,7 +26,7 @@ mod Erc721Portal {
     use core::serde::Serde;
     use starknet::{ContractAddress, get_caller_address, get_contract_address};
     use super::super::Portal::Portal_component;
-    use super::super::super::inputbox::InputBox::{IInputBoxDispatcher, IInputBoxDispatcherTrait};
+    use super::super::super::inputs::InputBox::{IInputBoxDispatcher, IInputBoxDispatcherTrait};
     use super::{IERC721Dispatcher, IERC721DispatcherTrait};
 
     component!(path: Portal_component, storage: portal, event: PortalEvent);

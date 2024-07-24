@@ -35,9 +35,9 @@ trait IERC20<TContractState> {
 mod Erc20Portal {
     use core::serde::Serde;
     use starknet::{ContractAddress, get_caller_address, get_contract_address};
-    use super::super::Portal::Portal_component;
     use super::{IERC20Dispatcher, IERC20DispatcherTrait};
-    use super::super::super::inputbox::InputBox::{IInputBoxDispatcher, IInputBoxDispatcherTrait};
+    use super::super::Portal::Portal_component;
+    use super::super::super::inputs::InputBox::{IInputBoxDispatcher, IInputBoxDispatcherTrait};
 
     component!(path: Portal_component, storage: portal, event: PortalEvent);
 
