@@ -11,3 +11,10 @@ mod portals {
     pub mod Erc1155SinglePortal;
     pub mod Erc1155BatchPortal;
 }
+mod common {
+    pub mod CanonicalMachine;
+    pub mod InputEncoding;
+    pub mod Inputs;
+    pub mod Outputs;
+    pub mod OutputValidityProof;
+}
