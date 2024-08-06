@@ -18,3 +18,9 @@ mod common {
     pub mod Outputs;
     pub mod OutputValidityProof;
 }
+mod library {
+    pub mod LibError;
+    pub mod LibAddress;
+    pub mod LibMerkle32;
+    pub mod LibOutputValidityProof;
+}
